@@ -10,7 +10,7 @@ void main() {
     // The reducer
     moviesAppStateReducer,
     // The initial state of the app
-    initialState: const MoviesAppState([], false),
+    initialState: MoviesAppState(),
   );
   runApp(
     StoreProvider<MoviesAppState>(
@@ -39,15 +39,15 @@ class MoviesHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-          child: StoreConnector<MoviesAppState, MoviesAppState>(
-      builder: (_, state) => state.isLoading
+      child: StoreConnector<MoviesAppState, MoviesAppState>(
+        builder: (_, state) => state.isLoading
             ? const Center(child: CircularProgressIndicator())
             : state.movies.isEmpty
                 ? loadMoviesButton(context)
                 : moviesWidget(context),
-      converter: (store) => store.state,
-    ),
-        ));
+        converter: (store) => store.state,
+      ),
+    ));
   }
 
   Widget moviesWidget(BuildContext context) {
@@ -74,10 +74,18 @@ class MoviesHomeScreen extends StatelessWidget {
           final movies = await Future.delayed(
               const Duration(seconds: 2),
               () => [
-                    const Movie("Star Wars", 1977),
-                    const Movie("The Terminator", 1984),
-                    const Movie("The Green Mile", 1999),
-                    const Movie("The Matrix", 1999)
+                    Movie((b) => b
+                      ..title = "Star Wars"
+                      ..releaseYear = 1977),
+                    Movie((b) => b
+                      ..title = "The Terminator"
+                      ..releaseYear = 1984),
+                    Movie((b) => b
+                      ..title = "The Green Mile"
+                      ..releaseYear = 1999),
+                    Movie((b) => b
+                      ..title = "The Matrix"
+                      ..releaseYear = 1999)
                   ]);
 
           // Dispatch the movies loaded action
@@ -104,7 +112,7 @@ class MoviesHomeScreen extends StatelessWidget {
           "Title ${movies[index].title}. Year ${movies[index].releaseYear}",
         ),
       ),
-      converter: (store) => store.state.movies,
+      converter: (store) => store.state.movies.toList(),
     );
   }
 }

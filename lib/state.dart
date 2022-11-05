@@ -1,20 +1,27 @@
-import 'package:flutter/foundation.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/built_value.dart';
 
-@immutable
-class MoviesAppState {
-  // The list of movies
-  final List<Movie> movies;
+part 'state.g.dart';
 
-  // The app is loading the list of movies
-  final bool isLoading;
+abstract class MoviesAppState implements Built<MoviesAppState, MoviesAppStateBuilder> {
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(MoviesAppStateBuilder b) => b..isLoading = false;
 
-  const MoviesAppState(this.movies, this.isLoading);
+  BuiltList<Movie> get movies;
+
+  bool get isLoading;
+
+  MoviesAppState._();
+
+  factory MoviesAppState([void Function(MoviesAppStateBuilder) updates]) = _$MoviesAppState;
 }
 
-@immutable
-class Movie {
-  final String title;
-  final int releaseYear;
+abstract class Movie implements Built<Movie, MovieBuilder> {
+  String get title;
 
-  const Movie(this.title, this.releaseYear);
+  int get releaseYear;
+
+  Movie._();
+
+  factory Movie([void Function(MovieBuilder) updates]) = _$Movie;
 }
